@@ -6,12 +6,13 @@ gem 'rails', '4.2.4'
 gem 'rails-api'
 
 gem 'active_model_serializers'
+gem 'bcrypt'
 
 gem 'pg'
 
 
 group :development do
-  gem 'byebug'
+  gem 'pry-rails'
   gem 'spring'
 end
 

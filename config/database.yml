@@ -1,0 +1,14 @@
+default: &default
+  adapter: postgresql
+  user: yab
+  password: yab
+  pool: 5
+  timeout: 5000
+
+development:
+  <<: *default
+  database: yab_development
+
+test:
+  <<: *default
+  database: yab_test

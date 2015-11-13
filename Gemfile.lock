@@ -42,6 +42,7 @@ GEM
     bcrypt (3.1.10)
     builder (3.2.2)
     coderay (1.1.0)
+    database_cleaner (1.5.1)
     diff-lcs (1.2.5)
     erubis (2.7.0)
     factory_girl (4.5.0)
@@ -118,6 +119,10 @@ GEM
       rspec-mocks (~> 3.3.0)
       rspec-support (~> 3.3.0)
     rspec-support (3.3.0)
+    seed-fu (2.3.5)
+      activerecord (>= 3.1, < 4.3)
+      activesupport (>= 3.1, < 4.3)
+    seedbank (0.3.0)
     slop (3.6.0)
     spring (1.4.1)
     sprockets (3.4.0)
@@ -137,10 +142,13 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   bcrypt
+  database_cleaner
   factory_girl_rails
   pg
   pry-rails
   rails (= 4.2.4)
   rails-api
   rspec-rails
+  seed-fu
+  seedbank
   spring

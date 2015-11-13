@@ -6,4 +6,6 @@ class User < ActiveRecord::Base
   validates :email, uniqueness: true
   validates_format_of :email, with: /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
 
+  has_many :posts
+
 end

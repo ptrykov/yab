@@ -25,7 +25,7 @@ describe User, type: :model do
           expect(subject).to be_valid
         end
 
-        it "have not to be too short" do
+        it "has not to be too short" do
           subject.password = subject.password_confirmation = 'abc'
           expect(subject).not_to be_valid
           subject.password = subject.password_confirmation = password

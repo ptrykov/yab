@@ -13,6 +13,7 @@ group :test, :development do
   gem 'spring'
   gem 'factory_girl_rails'
   gem 'rspec-rails'
+  gem 'shoulda-matchers', '~> 3.0'
   gem 'pry-rails'
   gem 'database_cleaner'
 end

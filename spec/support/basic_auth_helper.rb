@@ -7,7 +7,7 @@ end
 
 module BasicAuth
   def basic_auth(user)
-    { Autorization: ActionController::HttpAuthentication::Basic.encode_credentials(user.email, user.password) }
+    request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user.email, user.password)
   end
 end
 

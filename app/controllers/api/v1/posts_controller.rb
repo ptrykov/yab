@@ -19,9 +19,10 @@ class Api::V1::PostsController < Api::V1::ApplicationController
   # POST /posts.json
   def create
     @post = Post.new(post_params)
+    @post.user = current_user
 
     if @post.save
-      render json: @post, status: :created, location: @post
+      render json: @post, status: :created, location: api_v1_post_path(@post)
     else
       render json: @post.errors, status: :unprocessable_entity
     end

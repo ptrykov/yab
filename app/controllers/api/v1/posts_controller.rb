@@ -6,6 +6,7 @@ class Api::V1::PostsController < Api::V1::ApplicationController
   # GET /posts.json
   def index
     @posts = Post.all
+    authorize @posts
 
     render json: @posts
   end
@@ -53,6 +54,7 @@ class Api::V1::PostsController < Api::V1::ApplicationController
 
     def set_post
       @post = Post.find(params[:id])
+      authorize @post
     end
 
     def post_params

@@ -1,5 +1,8 @@
 class Api::V1::ApplicationController < ActionController::API
   include ActionController::HttpAuthentication::Basic::ControllerMethods
+  include Pundit
+  
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   before_action :check_request_format, :authenticate
 
@@ -12,7 +15,7 @@ class Api::V1::ApplicationController < ActionController::API
   end
 
   def check_request_format
-    render nothing: true, status: 406 unless request.format.symbol == :json
+    render nothing: true, status: :not_acceptable unless request.format.symbol == :json
   end
 
   def authenticate
@@ -22,5 +25,9 @@ class Api::V1::ApplicationController < ActionController::API
         @current_user = account.authenticate(p)
       end
     end
+  end
+
+  def user_not_authorized
+    render nothing: true, status: :forbidden
   end
 end

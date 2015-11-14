@@ -76,14 +76,14 @@ RSpec.describe Api::V1::PostsController, type: :controller do
       }
 
       it "updates the requested post" do
-        post = FactoryGirl.create(:post)
+        post = FactoryGirl.create(:post, user: user)
         put :update, {:id => post.to_param, :post => new_attributes}
         post.reload
         expect(post.title).to eq(new_title)
       end
 
       it "assigns the requested post as @post" do
-        post = FactoryGirl.create(:post)
+        post = FactoryGirl.create(:post, user: user)
         put :update, {:id => post.to_param, :post => valid_attributes}
         expect(assigns(:post)).to eq(post)
       end
@@ -91,7 +91,7 @@ RSpec.describe Api::V1::PostsController, type: :controller do
 
     context "with invalid params" do
       it "assigns the post as @post" do
-        post = FactoryGirl.create(:post)
+        post = FactoryGirl.create(:post, user: user)
         put :update, {:id => post.to_param, :post => invalid_attributes}
         expect(assigns(:post)).to eq(post)
       end
@@ -100,7 +100,7 @@ RSpec.describe Api::V1::PostsController, type: :controller do
 
   describe "DELETE #destroy" do
     it "destroys the requested post" do
-      post = FactoryGirl.create(:post)
+      post = FactoryGirl.create(:post, user: user)
       expect {
         delete :destroy, {:id => post.to_param}
       }.to change(Post, :count).by(-1)

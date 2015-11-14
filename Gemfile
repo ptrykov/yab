@@ -8,6 +8,7 @@ gem 'bcrypt'
 gem 'pg'
 gem 'seed-fu'
 gem 'seedbank'
+gem 'pundit'
 
 group :test, :development do
   gem 'spring'

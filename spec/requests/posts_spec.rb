@@ -20,7 +20,7 @@ RSpec.describe "Api::V1::Posts", type: :request do
     end 
   end
 
- let!(:blog_post) { FactoryGirl.create(:post) } 
+ let!(:blog_post) { FactoryGirl.create(:post, user: user) } 
  let(:new_post) { {title: "new_title", body: "new_body"} }
 
   describe "GET /posts/1" do

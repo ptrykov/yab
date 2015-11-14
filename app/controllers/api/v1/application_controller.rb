@@ -7,6 +7,10 @@ class Api::V1::ApplicationController < ActionController::API
 
   protected
 
+  def self.guest_users_can_view
+    skip_before_action :authenticate, only: [:index, :show]
+  end
+
   def check_request_format
     render nothing: true, status: 406 unless request.format.symbol == :json
   end

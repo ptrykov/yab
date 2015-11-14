@@ -4,6 +4,8 @@ describe User, type: :model do
 
   let(:email) { 'example@domain.com' }
   let(:password) { 'password' }
+  it { is_expected.to have_many(:posts) }
+  it { is_expected.to have_and_belong_to_many(:roles) }
 
   context "validations" do
     let(:user) { FactoryGirl.build(:user) }
@@ -90,7 +92,37 @@ describe User, type: :model do
         expect{ subject.update_attributes(password: "password", password_confirmation: "password") }.to change{ subject.password_digest }
         expect(subject).to be_valid
       end
-
     end
+
+    context "user posts association" do
+      it "expected to be deleted when user is deleted" do
+        expect(user).to have_many(:posts).dependent(:destroy)
+      end
+    end
+  end
+
+  context "dynamic role matcher" do
+    let(:user) { FactoryGirl.build(:user) }
+
+    context "simple user" do
+      it "should response to is_admin? with false" do
+        expect(user.is_admin?).to be_falsey
+      end
+    end
+
+    context "admin user" do
+      let(:admin_role) { FactoryGirl.create(:role, :admin) }
+      before :each do
+        user.roles << admin_role
+      end
+      it "should response to is_admin? with true" do
+        expect(user.is_admin?).to be_truthy
+      end
+
+      it "should response to is_chuck_noris_or_admin? with true" do
+        expect(user.is_chuck_noris_or_admin?).to be_truthy
+      end
+    end
+
   end
 end

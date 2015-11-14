@@ -1,5 +1,6 @@
 class Api::V1::PostsController < Api::V1::ApplicationController
   before_action :set_post, only: [:show, :update, :destroy]
+  guest_users_can_view
 
   # GET /posts
   # GET /posts.json

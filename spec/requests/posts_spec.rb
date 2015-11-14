@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe "Api::V1::Posts", type: :request do
   let(:user) { FactoryGirl.create(:user) }
+  let(:admin) { FactoryGirl.create(:admin) }
+  let(:other_user) { FactoryGirl.create(:user) }
 
   describe "GET /posts" do
     context "guest user" do
@@ -61,17 +63,23 @@ RSpec.describe "Api::V1::Posts", type: :request do
 
   describe "PUTS /posts/1" do
     context "guest user" do
-      it "available for user" do
+      it "not available for user" do
         put api_v1_post_path(blog_post), {post: new_post}, @env
         expect(response).to have_http_status(401)
       end
     end
 
     context "registered user" do
-      it "available for user" do
+      it "available for owner user" do
         basic_auth(user)
         put api_v1_post_path(blog_post), {post: new_post}, @env
         expect(response).to have_http_status(204)
+      end
+
+      it "not available if user is not post owner" do
+        basic_auth(other_user)
+        put api_v1_post_path(blog_post), {post: new_post}, @env
+        expect(response).to have_http_status(403)
       end
     end
   end
@@ -85,10 +93,16 @@ RSpec.describe "Api::V1::Posts", type: :request do
     end
 
     context "registered user" do
-      it "available for user" do
+      it "available for owner user" do
         basic_auth(user)
         delete api_v1_post_path(blog_post), {}, @env
         expect(response).to have_http_status(204)
+      end
+
+      it "not available if user is not post owner" do
+        basic_auth(other_user)
+        delete api_v1_post_path(blog_post), {}, @env
+        expect(response).to have_http_status(403)
       end
     end
   end

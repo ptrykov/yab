@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   validates_format_of :email, with: /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
 
   has_many :posts, dependent: :destroy
+  has_many :comments, dependent: :destroy
   
   has_and_belongs_to_many :roles
 

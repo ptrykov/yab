@@ -7,11 +7,10 @@ RSpec.describe Api::V1::PostsController, type: :controller do
   }
 
   let(:invalid_attributes) {
-    { title: 'title' }
+    { title: nil}
   }
 
-  let!(:user) {FactoryGirl.create(:user, email: 'other@example.com') }
-  let(:valid_session) { basic_auth(user) }
+  let!(:user) {FactoryGirl.create(:user) }
   
   before :each do
     request.accept = "application/json"
@@ -94,6 +93,12 @@ RSpec.describe Api::V1::PostsController, type: :controller do
         post = FactoryGirl.create(:post, user: user)
         put :update, {:id => post.to_param, :post => invalid_attributes}
         expect(assigns(:post)).to eq(post)
+      end
+      it "doesn't change post" do
+        post = FactoryGirl.create(:post, user: user)
+        put :update, {:id => post.to_param, :post => invalid_attributes}
+        post.reload
+        expect(post.title).not_to eq(invalid_attributes[:title])
       end
     end
   end

@@ -5,6 +5,7 @@ describe User, type: :model do
   let(:email) { 'example@domain.com' }
   let(:password) { 'password' }
   it { is_expected.to have_many(:posts) }
+  it { is_expected.to have_many(:comments).dependent(:destroy) }
   it { is_expected.to have_and_belong_to_many(:roles) }
 
   context "validations" do

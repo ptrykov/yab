@@ -60,6 +60,8 @@ ActiveRecord::Schema.define(version: 20151114140713) do
     t.datetime "updated_at",      null: false
   end
 
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+
   add_foreign_key "comments", "posts"
   add_foreign_key "comments", "users"
   add_foreign_key "posts", "users"

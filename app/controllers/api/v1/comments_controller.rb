@@ -1,10 +1,13 @@
 class Api::V1::CommentsController < Api::V1::ApplicationController
+  before_action :set_post
   before_action :set_comment, only: [:show, :update, :destroy]
+  guest_users_can_view
 
   # GET /comments
   # GET /comments.json
   def index
-    @comments = Comment.all
+    @comments = @post.comments.all
+    authorize @comments
 
     render json: @comments
   end
@@ -18,10 +21,11 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    @comment = Comment.new(comment_params)
+    @comment = @post.comments.new(comment_params)
+    @comment.user = current_user
 
     if @comment.save
-      render json: @comment, status: :created, location: @comment
+      render json: @comment, status: :created, location: api_v1_post_comments_path(@post, @comment)
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
@@ -30,7 +34,7 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
   # PATCH/PUT /comments/1
   # PATCH/PUT /comments/1.json
   def update
-    @comment = Comment.find(params[:id])
+    @comment = @post.comments.find(params[:id])
 
     if @comment.update(comment_params)
       head :no_content
@@ -50,10 +54,15 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
   private
 
     def set_comment
-      @comment = Comment.find(params[:id])
+      @comment = @post.comments.find(params[:id])
+      authorize @comment
     end
 
     def comment_params
       params.require(:comment).permit(:body, :post_id, :user_id)
+    end
+    
+    def set_post
+      @post = Post.find(params[:post_id])
     end
 end

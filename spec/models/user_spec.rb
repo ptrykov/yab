@@ -4,9 +4,12 @@ describe User, type: :model do
 
   let(:email) { 'example@domain.com' }
   let(:password) { 'password' }
-  it { is_expected.to have_many(:posts) }
+  it { is_expected.to have_many(:posts).dependent(:destroy) }
   it { is_expected.to have_many(:comments).dependent(:destroy) }
   it { is_expected.to have_and_belong_to_many(:roles) }
+  it { is_expected.to validate_presence_of(:firstname) }
+  it { is_expected.to validate_presence_of(:lastname) }
+  it { is_expected.to validate_uniqueness_of(:email) }
 
   context "validations" do
     let(:user) { FactoryGirl.build(:user) }
@@ -21,13 +24,6 @@ describe User, type: :model do
         subject.save!
       end
       context "password" do
-        it "should not be valid if empty" do
-          subject.password = subject.password_confirmation = nil
-          expect(subject).not_to be_valid
-          subject.password = subject.password_confirmation = password
-          expect(subject).to be_valid
-        end
-
         it "has not to be too short" do
           subject.password = subject.password_confirmation = 'abc'
           expect(subject).not_to be_valid
@@ -57,27 +53,6 @@ describe User, type: :model do
           subject.email = email
           expect(subject).to be_valid
         end
-
-        it "is unique" do 
-          subject.save!
-          new_user = FactoryGirl.build(:user, email: subject.email)
-          expect(new_user.valid?).to be_falsey
-          expect(new_user.errors[:email].size).to eq(1)
-        end
-      end
-
-      context "personal info" do
-        it "firstname must be filled" do
-          subject.firstname = ""
-          expect(subject.valid?).to be_falsey
-          expect(subject.errors[:firstname].size).to eq(1)
-        end
-
-        it "lastname must be filler" do
-          subject.lastname = ""
-          expect(subject.valid?).to be_falsey
-          expect(subject.errors[:lastname].size).to eq(1)
-        end
       end
     end
 
@@ -92,12 +67,6 @@ describe User, type: :model do
       it "password_digest is changed after password update and user is valid" do
         expect{ subject.update_attributes(password: "password", password_confirmation: "password") }.to change{ subject.password_digest }
         expect(subject).to be_valid
-      end
-    end
-
-    context "user posts association" do
-      it "expected to be deleted when user is deleted" do
-        expect(user).to have_many(:posts).dependent(:destroy)
       end
     end
   end

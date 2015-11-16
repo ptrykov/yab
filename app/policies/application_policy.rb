@@ -55,10 +55,10 @@ class ApplicationPolicy
   private
   
   def admin_rights
-    return true if user.is_admin?
+    user.is_admin?
   end
 
   def owner
-    return true if record.user == user
+    record.user == user
   end
 end

@@ -24,7 +24,7 @@ class CommentPolicy < ApplicationPolicy
   private
 
   def post_owner
-    return true if record.post.user == user
+    record.post.user == user
   end
   
 end

@@ -23,6 +23,6 @@ class UserPolicy < ApplicationPolicy
   private
 
   def owner
-    return true if record == user
+    record == user
   end 
 end

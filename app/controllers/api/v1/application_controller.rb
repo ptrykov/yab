@@ -14,6 +14,10 @@ class Api::V1::ApplicationController < ActionController::API
     skip_before_action :authenticate, only: [:index, :show]
   end
 
+  def self.guest_users_can_view_or_create
+    skip_before_action :authenticate, only: [:index, :show, :create]
+  end
+
   def check_request_format
     render nothing: true, status: :not_acceptable unless request.format.symbol == :json
   end

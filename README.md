@@ -2,7 +2,7 @@
 
 To initialize application run
 ```
-db:setup
+rake db:setup
 ```
 
 Models:

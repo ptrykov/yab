@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'airborne'
 
 RSpec.describe Api::V1::UsersController, type: :controller do
 
@@ -9,7 +10,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   }
 
   let(:invalid_attributes) {
-    { title: nil, lastname: 'Whitney', email: 'john@gmail.com', password: 'qwerty123', password_confirmation: 'qwerty123'}
+    { title: nil, lastname: 'Whitney', email: 'john@gmail.com', password: 'qwerty12', password_confirmation: 'qwerty123'}
   }
 
   before :each do
@@ -20,6 +21,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     it "assigns all users as @users" do
       get :index, {}
       expect(assigns(:users)).to eq([user])
+      expect_json_keys('users.*', [:id, :firstname, :lastname])
+      expect_json('users.?', firstname: user.firstname)
     end
   end
 
@@ -27,6 +30,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     it "assigns the requested user as @user" do
       get :show, {:id => user.to_param}
       expect(assigns(:user)).to eq(user)
+      expect_json_keys('user', [:id, :firstname, :lastname])
+      expect_json('user', firstname: user.firstname)
     end
   end
 
@@ -40,6 +45,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         expect {
           post :create, {:user => valid_attributes}
         }.to change(User, :count).by(1)
+        expect_json_keys('user', [:id, :firstname, :lastname])
+        expect_json('user', firstname: user.firstname)
       end
 
       it "assigns a newly created user as @user" do
@@ -59,6 +66,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         expect {
           post :create, {:user => invalid_attributes}
         }.not_to change(User, :count)
+        expect_status(422)
       end
     end
   end
@@ -75,6 +83,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         put :update, {:id => user.to_param, :user => new_attributes}
         user.reload
         expect(user.firstname).to eq(firstname)
+        expect_status(204)
       end
 
       it "assigns the requested user as @user" do
@@ -92,6 +101,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         put :update, {:id => user.to_param, :user => invalid_attributes}
         user.reload
         expect(user.firstname).not_to eq(invalid_attributes[:firstname])
+        expect_status(422)
       end
     end
   end
@@ -101,6 +111,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       expect {
         delete :destroy, {:id => user.to_param}
       }.to change(User, :count).by(-1)
+      expect_status(204)
     end
   end
 end

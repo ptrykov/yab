@@ -30,6 +30,8 @@ RSpec.describe Api::V1::CommentsController, type: :controller do
       post_comment = FactoryGirl.create(:comment, post: blog_post)
       get :index, {:post_id => blog_post.to_param}
       expect(assigns(:comments)).to eq([post_comment])
+      expect_json_keys('comments.*', [:id, :body, :user, :created_at, :updated_at])
+      expect_json('comments.?', body: comment.body)
     end
   end
 
@@ -38,6 +40,8 @@ RSpec.describe Api::V1::CommentsController, type: :controller do
       comment = FactoryGirl.create(:comment)
       get :show, {:post_id => comment.post.to_param, :id => comment.to_param}
       expect(assigns(:comment)).to eq(comment)
+      expect_json_keys('comment', [:id, :body, :user, :created_at, :updated_at])
+      expect_json('comment', body: comment.body)
     end
   end
 
@@ -47,6 +51,8 @@ RSpec.describe Api::V1::CommentsController, type: :controller do
         expect {
           post :create, {:post_id => blog_post.to_param, :comment => valid_attributes}
         }.to change(Comment, :count).by(1)
+        expect_json_keys('comment', [:id, :body, :user, :created_at, :updated_at])
+        expect_json('comment', body: valid_attributes[:body])
       end
 
       it "assigns created comment, to current_user and post" do
@@ -72,6 +78,7 @@ RSpec.describe Api::V1::CommentsController, type: :controller do
         expect{
           post :create, {:post_id => blog_post.to_param, :comment => invalid_attributes}
         }.not_to change(Comment, :count)
+        expect_status(422)
       end
     end
   end
@@ -88,6 +95,7 @@ RSpec.describe Api::V1::CommentsController, type: :controller do
         put :update, {:post_id => blog_post.to_param, :id => comment.to_param, :comment => new_attributes}
         comment.reload
         expect(comment.body).to eq(new_body)
+        expect_status(204)
       end
 
       it "assigns the requested comment as @comment" do
@@ -109,6 +117,7 @@ RSpec.describe Api::V1::CommentsController, type: :controller do
         put :update, {:post_id => blog_post.to_param, :id => comment.to_param, :comment => invalid_attributes}
         comment.reload
         expect(comment.body).not_to eq(invalid_attributes[:body])
+        expect_status(422)
       end
     end
   end
@@ -119,6 +128,7 @@ RSpec.describe Api::V1::CommentsController, type: :controller do
       expect {
         delete :destroy, {:post_id => blog_post.to_param, :id => comment.to_param}
       }.to change(Comment, :count).by(-1)
+      expect_status(204)
     end
   end
 end

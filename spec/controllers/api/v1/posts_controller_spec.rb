@@ -10,7 +10,7 @@ RSpec.describe Api::V1::PostsController, type: :controller do
     { title: nil}
   }
 
-  let!(:user) {FactoryGirl.create(:user) }
+  let(:user) { FactoryGirl.create(:user) }
   
   before :each do
     request.accept = "application/json"
@@ -22,6 +22,8 @@ RSpec.describe Api::V1::PostsController, type: :controller do
       post = FactoryGirl.create(:post)
       get :index, {}
       expect(assigns(:posts)).to eq([post])
+      expect_json_keys('posts.*', [:id, :title, :body, :user, :created_at, :updated_at])
+      expect_json('posts.?', body: post.body)
     end
   end
 
@@ -30,6 +32,8 @@ RSpec.describe Api::V1::PostsController, type: :controller do
       post = FactoryGirl.create(:post)
       get :show, {:id => post.to_param}
       expect(assigns(:post)).to eq(post)
+      expect_json_keys('post', [:id, :title, :body, :user, :created_at, :updated_at])
+      expect_json('post', body: post.body)
     end
   end
 
@@ -39,6 +43,8 @@ RSpec.describe Api::V1::PostsController, type: :controller do
         expect {
           post :create, {:post => valid_attributes}
         }.to change(Post, :count).by(1)
+        expect_json_keys('post', [:id, :title, :body, :user, :created_at, :updated_at])
+        expect_json('post', body: valid_attributes[:body])
       end
 
       it "assigns created post to current user" do
@@ -63,6 +69,7 @@ RSpec.describe Api::V1::PostsController, type: :controller do
         expect {
           post :create, {:post => invalid_attributes}
         }.not_to change(Post, :count)
+        expect_status(422)
       end
     end
   end
@@ -79,6 +86,7 @@ RSpec.describe Api::V1::PostsController, type: :controller do
         put :update, {:id => post.to_param, :post => new_attributes}
         post.reload
         expect(post.title).to eq(new_title)
+        expect_status(204)
       end
 
       it "assigns the requested post as @post" do
@@ -99,6 +107,7 @@ RSpec.describe Api::V1::PostsController, type: :controller do
         put :update, {:id => post.to_param, :post => invalid_attributes}
         post.reload
         expect(post.title).not_to eq(invalid_attributes[:title])
+        expect_status(422)
       end
     end
   end
@@ -109,6 +118,7 @@ RSpec.describe Api::V1::PostsController, type: :controller do
       expect {
         delete :destroy, {:id => post.to_param}
       }.to change(Post, :count).by(-1)
+      expect_status(204)
     end
   end
 end

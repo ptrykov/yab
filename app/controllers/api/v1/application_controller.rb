@@ -3,10 +3,13 @@ class Api::V1::ApplicationController < ActionController::API
   include Pundit
   
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
-
-  before_action :check_request_format, :authenticate
+  before_action :check_request_format, :authenticate, except: [:no_route_founded]
 
   attr_reader :current_user
+
+  def no_route_founded
+    render json: { error: 'No route founded', status: '404' }, status: :not_found
+  end
 
   protected
 
@@ -34,4 +37,6 @@ class Api::V1::ApplicationController < ActionController::API
   def user_not_authorized
     render nothing: true, status: :forbidden
   end
+
+  
 end

@@ -9,6 +9,8 @@ gem 'pg'
 gem 'seed-fu'
 gem 'seedbank'
 gem 'pundit'
+gem 'kaminari'
+gem 'rack-cors'
 
 group :test, :development do
   gem 'spring'

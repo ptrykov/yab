@@ -6,9 +6,10 @@ class Api::V1::PostsController < Api::V1::ApplicationController
   # GET /posts.json
   def index
     @posts = Post.all
+    @posts = paginate(@posts)
     authorize @posts
 
-    render json: @posts, each_serializer: Api::V1::PostSerializer
+    render json: @posts, each_serializer: Api::V1::PostSerializer, meta: meta_attributes(@posts)
   end
 
   # GET /posts/1

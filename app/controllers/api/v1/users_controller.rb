@@ -6,9 +6,10 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   # GET /users.json
   def index
     @users = User.all
+    @users = paginate(@users)
     authorize @users
     
-    render json: @users, each_serializer: Api::V1::UserSerializer
+    render json: @users, each_serializer: Api::V1::UserSerializer, meta: meta_attributes(@users)
   end
 
   # GET /users/1

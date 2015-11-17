@@ -7,9 +7,10 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
   # GET /comments.json
   def index
     @comments = @post.comments.all
+    @comments = paginate(@comments)
     authorize @comments
 
-    render json: @comments, each_serializer: Api::V1::CommentSerializer
+    render json: @comments, each_serializer: Api::V1::CommentSerializer, meta: meta_attributes(@comments)
   end
 
   # GET /comments/1

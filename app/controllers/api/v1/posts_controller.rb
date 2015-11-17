@@ -8,13 +8,13 @@ class Api::V1::PostsController < Api::V1::ApplicationController
     @posts = Post.all
     authorize @posts
 
-    render json: @posts
+    render json: @posts, each_serializer: Api::V1::PostSerializer
   end
 
   # GET /posts/1
   # GET /posts/1.json
   def show
-    render json: @post
+    render json: @post, serializer: Api::V1::PostSerializer
   end
 
   # POST /posts
@@ -24,7 +24,7 @@ class Api::V1::PostsController < Api::V1::ApplicationController
     @post.user = current_user
 
     if @post.save
-      render json: @post, status: :created, location: api_v1_post_path(@post)
+      render json: @post, status: :created, location: api_v1_post_path(@post), serializer: Api::V1::PostSerializer
     else
       render json: @post.errors, status: :unprocessable_entity
     end

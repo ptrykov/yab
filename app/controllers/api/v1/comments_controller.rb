@@ -9,13 +9,13 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
     @comments = @post.comments.all
     authorize @comments
 
-    render json: @comments
+    render json: @comments, each_serializer: Api::V1::CommentSerializer
   end
 
   # GET /comments/1
   # GET /comments/1.json
   def show
-    render json: @comment
+    render json: @comment, serializer: Api::V1::CommentSerializer
   end
 
   # POST /comments
@@ -25,7 +25,7 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
     @comment.user = current_user
 
     if @comment.save
-      render json: @comment, status: :created, location: api_v1_post_comments_path(@post, @comment)
+      render json: @comment, status: :created, location: api_v1_post_comments_path(@post, @comment), serializer: Api::V1::CommentSerializer
     else
       render json: @comment.errors, status: :unprocessable_entity
     end

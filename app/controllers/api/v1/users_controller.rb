@@ -8,13 +8,13 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     @users = User.all
     authorize @users
     
-    render json: @users
+    render json: @users, each_serializer: Api::V1::UserSerializer
   end
 
   # GET /users/1
   # GET /users/1.json
   def show
-    render json: @user
+    render json: @user, serializer: Api::V1::UserSerializer
   end
 
   # POST /users
@@ -23,7 +23,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      render json: @user, status: :created, location: api_v1_user_path(@user)
+      render json: @user, status: :created, location: api_v1_user_path(@user), serializer: Api::V1::UserSerializer
     else
       render json: @user.errors, status: :unprocessable_entity
     end

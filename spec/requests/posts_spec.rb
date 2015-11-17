@@ -23,7 +23,7 @@ RSpec.describe "Api::V1::Posts", type: :request do
   end
 
  let!(:blog_post) { FactoryGirl.create(:post, user: user) } 
- let(:new_post) { {title: "new_title", body: "new_body"} }
+ let(:new_post_attrs) { {title: "new_title", body: "new_body"} }
 
   describe "GET /posts/:id" do
 
@@ -47,7 +47,7 @@ RSpec.describe "Api::V1::Posts", type: :request do
 
     context "guest user" do
       it "not available for user" do
-        post api_v1_posts_path, {post: new_post}
+        post api_v1_posts_path, {post: new_post_attrs}
         expect(response).to have_http_status(401)
       end
     end
@@ -55,7 +55,7 @@ RSpec.describe "Api::V1::Posts", type: :request do
     context "registered user" do
       it "available for user" do
         basic_auth(user)
-        post api_v1_posts_path, {post: new_post}, @env
+        post api_v1_posts_path, {post: new_post_attrs}, @env
         expect(response).to have_http_status(201)
       end
     end
@@ -64,7 +64,7 @@ RSpec.describe "Api::V1::Posts", type: :request do
   describe "PUTS /posts/:id" do
     context "guest user" do
       it "not available for user" do
-        put api_v1_post_path(blog_post), {post: new_post}, @env
+        put api_v1_post_path(blog_post), {post: new_post_attrs}, @env
         expect(response).to have_http_status(401)
       end
     end
@@ -72,22 +72,21 @@ RSpec.describe "Api::V1::Posts", type: :request do
     context "registered user" do
       it "available for owner user" do
         basic_auth(user)
-        put api_v1_post_path(blog_post), {post: new_post}, @env
+        put api_v1_post_path(blog_post), {post: new_post_attrs}, @env
         expect(response).to have_http_status(204)
       end
 
       it "not available if user is not post owner" do
         basic_auth(other_user)
-        put api_v1_post_path(blog_post), {post: new_post}, @env
+        put api_v1_post_path(blog_post), {post: new_post_attrs}, @env
         expect(response).to have_http_status(403)
       end
 
       it "available for admin user" do
         basic_auth(admin)
-        put api_v1_post_path(blog_post), {post: new_post}, @env
+        put api_v1_post_path(blog_post), {post: new_post_attrs}, @env
         expect(response).to have_http_status(204)
       end
-
     end
   end
 
@@ -119,5 +118,4 @@ RSpec.describe "Api::V1::Posts", type: :request do
       end
     end
   end
-
 end

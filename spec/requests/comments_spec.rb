@@ -25,7 +25,7 @@ RSpec.describe "Api::V1::Comments", type: :request do
   end
 
   let(:comment)   { FactoryGirl.create(:comment, post: blog_post, user: user) }
-  let(:new_comment) { {body: 'new comment body'} }
+  let(:new_comment_attrs) { {body: 'new comment body'} }
 
   describe "GET /posts/:post_id/comments/:id" do
     context "guest user" do
@@ -47,7 +47,7 @@ RSpec.describe "Api::V1::Comments", type: :request do
   describe "POST /posts/:post_id/comments" do
     context "guest user" do
       it "not available for user" do
-        post api_v1_post_comments_path(blog_post), {comment: new_comment}, @env
+        post api_v1_post_comments_path(blog_post), {comment: new_comment_attrs}, @env
         expect(response).to have_http_status(401)
       end
     end
@@ -55,7 +55,7 @@ RSpec.describe "Api::V1::Comments", type: :request do
     context "registered user" do 
       it "available for registered user" do
         basic_auth(user)
-        post api_v1_post_comments_path(blog_post), {comment: new_comment}, @env
+        post api_v1_post_comments_path(blog_post), {comment: new_comment_attrs}, @env
         expect(response).to have_http_status(201)
       end
     end
@@ -64,7 +64,7 @@ RSpec.describe "Api::V1::Comments", type: :request do
   describe "PUTS /posts/:post_id/comments/:id" do
     context "guest user" do
       it "not available for user" do
-        put api_v1_post_comment_path(blog_post, comment), {comment: new_comment}, @env
+        put api_v1_post_comment_path(blog_post, comment), {comment: new_comment_attrs}, @env
         expect(response).to have_http_status(401)
       end
     end
@@ -72,25 +72,25 @@ RSpec.describe "Api::V1::Comments", type: :request do
     context "registered user" do
       it "available for comment owner user" do
         basic_auth(user)
-        put api_v1_post_comment_path(blog_post, comment), {comment: new_comment}, @env
+        put api_v1_post_comment_path(blog_post, comment), {comment: new_comment_attrs}, @env
         expect(response).to have_http_status(204)
       end
 
       it "available for post owner user" do
         basic_auth(post_user)
-        put api_v1_post_comment_path(blog_post, comment), {comment: new_comment}, @env
+        put api_v1_post_comment_path(blog_post, comment), {comment: new_comment_attrs}, @env
         expect(response).to have_http_status(204)
       end
 
       it "available for admin user" do
         basic_auth(admin)
-        put api_v1_post_comment_path(blog_post, comment), {comment: new_comment}, @env
+        put api_v1_post_comment_path(blog_post, comment), {comment: new_comment_attrs}, @env
         expect(response).to have_http_status(204)
       end
 
       it "not available if user is not post or comment owner or not admin" do
         basic_auth(other_user)
-        put api_v1_post_comment_path(blog_post, comment), {comment: new_comment}, @env
+        put api_v1_post_comment_path(blog_post, comment), {comment: new_comment_attrs}, @env
         expect(response).to have_http_status(403)
       end
     end

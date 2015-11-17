@@ -6,5 +6,4 @@ FactoryGirl.define do
   trait :admin do
     name "Admin"
   end
-
 end

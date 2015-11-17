@@ -4,5 +4,4 @@ FactoryGirl.define do
     post
     user
   end
-
 end

@@ -23,6 +23,14 @@ describe User, type: :model do
       it "should be saved" do
         subject.save!
       end
+
+      it "expected email to be in proper format" do
+        subject.email = 'wrongformat@'
+        expect(subject).not_to be_valid
+        subject.email = email
+        expect(subject).to be_valid
+      end
+
       context "password" do
         it "has not to be too short" do
           subject.password = subject.password_confirmation = 'abc'
@@ -42,15 +50,6 @@ describe User, type: :model do
           subject.password_confirmation = "another_password"
           expect(subject).not_to be_valid
           subject.password_confirmation = password
-          expect(subject).to be_valid
-        end
-      end
-
-      context "email" do
-        it "expected to be in proper format" do
-          subject.email = 'wrongformat@'
-          expect(subject).not_to be_valid
-          subject.email = email
           expect(subject).to be_valid
         end
       end
@@ -93,6 +92,5 @@ describe User, type: :model do
         expect(user.is_chuck_noris_or_admin?).to be_truthy
       end
     end
-
   end
 end

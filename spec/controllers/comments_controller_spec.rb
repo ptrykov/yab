@@ -121,5 +121,4 @@ RSpec.describe Api::V1::CommentsController, type: :controller do
       }.to change(Comment, :count).by(-1)
     end
   end
-
 end
